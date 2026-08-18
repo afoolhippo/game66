@@ -121,12 +121,14 @@
           <span>件</span>
         </div>
 
+        <div id="resultRank" class="result-rank">慎重係長</div>
         <p id="resultComment" class="result-comment">今日もよくさばきました。</p>
 
-        <div class="result-buttons">
-          <button id="shareBtn" class="sub-btn" type="button">Xでシェア</button>
-          <button id="retryBtn" class="main-btn" type="button">もう1回</button>
-          <a class="sub-btn link-btn" href="https://afoolhippo.github.io/home/">カバゲーセン</a>
+        <div id="resultButtons" class="resultButtons hidden">
+          <button id="shareButton" class="resultButton resultButton-share" type="button">Xでシェア</button>
+          <button id="registerButton" class="resultButton resultButton-register" type="button">記録を登録</button>
+          <button id="retryButton" class="resultButton resultButton-retry" type="button">もう1回遊ぶ</button>
+          <button id="arcadeButton" class="resultButton resultButton-arcade" type="button">カバゲーセンへ</button>
         </div>
       </div>
     </section>
@@ -137,6 +139,7 @@
   <audio id="returnSe" src="return.mp3" preload="auto"></audio>
   <audio id="missSe" src="miss.mp3" preload="auto"></audio>
 
-  <script src="game.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="game.js?v=20260819-1"></script>
 </body>
 </html>

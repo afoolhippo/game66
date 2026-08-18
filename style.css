@@ -843,3 +843,63 @@ button {
   25% { transform: translateX(-5px) rotate(-4deg); }
   75% { transform: translateX(5px) rotate(4deg); }
 }
+
+
+/* 共通結果画面：2×2ボタン + 1.5秒遅延表示 */
+.result-rank {
+  margin-top: -2px;
+  font-size: clamp(18px, 5.2vw, 24px);
+  font-weight: 700;
+  color: #24343a;
+}
+
+.resultButtons {
+  width: min(92%, 360px);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 8px;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+}
+
+.resultButtons.hidden {
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+}
+
+.resultButton {
+  width: 100%;
+  min-height: 56px;
+  font-family: "DotGothic16", sans-serif;
+  font-size: 16px;
+  line-height: 1.25;
+  padding: 8px 6px;
+  border: 3px solid #1f2c2f;
+  border-radius: 10px;
+  color: #fffdf0;
+  box-shadow: 0 5px 0 #1f2c2f;
+}
+
+.resultButton:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 #1f2c2f;
+}
+
+.resultButton:disabled {
+  opacity: .68;
+  cursor: default;
+}
+
+.resultButton-share { background: #3e5b64; }
+.resultButton-register { background: #a65b2f; }
+.resultButton-retry { background: #c63727; }
+.resultButton-arcade { background: #465343; }
+
+.result-buttons {
+  display: none;
+}

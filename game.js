@@ -12,8 +12,11 @@
   const startBtn = document.getElementById("startBtn");
   const returnBtn = document.getElementById("returnBtn");
   const stampBtn = document.getElementById("stampBtn");
-  const retryBtn = document.getElementById("retryBtn");
-  const shareBtn = document.getElementById("shareBtn");
+  const resultButtons = document.getElementById("resultButtons");
+  const shareButton = document.getElementById("shareButton");
+  const registerButton = document.getElementById("registerButton");
+  const retryButton = document.getElementById("retryButton");
+  const arcadeButton = document.getElementById("arcadeButton");
 
   const timeValue = document.getElementById("timeValue");
   const processedValue = document.getElementById("processedValue");
@@ -35,12 +38,29 @@
   const hippo = document.getElementById("hippo");
 
   const resultProcessed = document.getElementById("resultProcessed");
+  const resultRank = document.getElementById("resultRank");
   const resultComment = document.getElementById("resultComment");
 
   const bgm = document.getElementById("bgm");
   const stampSe = document.getElementById("stampSe");
   const returnSe = document.getElementById("returnSe");
   const missSe = document.getElementById("missSe");
+
+  const GAME_ID = "game66";
+  const GAME_TITLE = "決裁ポン！";
+  const GAME_URL = "https://afoolhippo.github.io/game66/";
+  const ARCADE_URL = "https://afoolhippo.github.io/home/?skipTitle=1";
+
+  const SUPABASE_URL =
+    "https://gmncxnybsovlallxgnkd.supabase.co";
+
+  const SUPABASE_ANON_KEY =
+    "sb_publishable_ly3h5OhL8HDSHhYdmJq_Fw_9pG3mhla";
+
+  const kabaDb = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
 
   let gameTimer = null;
   let endAt = 0;
@@ -53,6 +73,9 @@
   let currentDoc = null;
   let deck = [];
   let last15Shown = false;
+  let currentRankTitle = "慎重係長";
+  let scoreRegistered = false;
+  let resultButtonsTimer = null;
 
   const normalDocs = [
     {
@@ -357,6 +380,12 @@
     processed = 0;
     misses = 0;
     last15Shown = false;
+    currentRankTitle = "慎重係長";
+    scoreRegistered = false;
+    clearTimeout(resultButtonsTimer);
+    registerButton.disabled = false;
+    registerButton.textContent = "記録を登録";
+    resultButtons.classList.add("hidden");
     deck = buildDeck();
 
     timeValue.textContent = GAME_TIME;
@@ -401,6 +430,21 @@
     }
   }
 
+  function getRankTitle(score) {
+    if (score >= 18) return "爆速係長";
+    if (score >= 14) return "敏腕係長";
+    return "慎重係長";
+  }
+
+  function showResultButtonsLater() {
+    clearTimeout(resultButtonsTimer);
+    resultButtons.classList.add("hidden");
+
+    resultButtonsTimer = setTimeout(() => {
+      resultButtons.classList.remove("hidden");
+    }, 1500);
+  }
+
   function finishGame() {
     if (!playing) return;
 
@@ -409,20 +453,21 @@
     clearInterval(gameTimer);
     stopBgm();
 
+    currentRankTitle = getRankTitle(processed);
     resultProcessed.textContent = processed;
+    resultRank.textContent = currentRankTitle;
 
-    if (processed >= 32 && misses <= 3) {
+    if (currentRankTitle === "爆速係長") {
       resultComment.textContent = "決裁が速すぎます、係長！";
-    } else if (processed >= 25) {
+    } else if (currentRankTitle === "敏腕係長") {
       resultComment.textContent = "今日もよくさばきました。";
-    } else if (processed >= 18) {
-      resultComment.textContent = "いい調子で処理できました。";
     } else {
-      resultComment.textContent = "ヒッポ係長、慎重派です。";
+      resultComment.textContent = "じっくり確認、慎重派です。";
     }
 
     setTimeout(() => {
       showScreen(resultScreen);
+      showResultButtonsLater();
     }, 180);
   }
 
@@ -554,25 +599,74 @@
 
   function shareResult() {
     const text =
-      `「決裁ポン！」で書類を${processed}件正しく処理しました！\n` +
-      `#カバゲーセン #決裁ポン`;
+      `決裁ポン！で遊びました！🦛\n\n` +
+      `正しく処理した書類：${processed}件\n\n` +
+      `書類を見極めて、ヒッポ印をポン！\n` +
+      `あなたは何件さばける？\n\n` +
+      `#カバゲーセン\n` +
+      `#決裁ポン`;
 
-    const url = "https://afoolhippo.github.io/home/";
     const shareUrl =
       "https://twitter.com/intent/tweet?text=" +
       encodeURIComponent(text) +
       "&url=" +
-      encodeURIComponent(url);
+      encodeURIComponent(GAME_URL);
 
     window.open(shareUrl, "_blank", "noopener,noreferrer");
+  }
+
+  async function registerScore() {
+    if (scoreRegistered) {
+      alert("この記録は登録済みです");
+      return;
+    }
+
+    const nickname = prompt(
+      "ニックネームを入力してね",
+      "匿名カバ"
+    );
+
+    if (!nickname) return;
+
+    registerButton.disabled = true;
+    registerButton.textContent = "登録中...";
+
+    const { error } = await kabaDb
+      .from("kaba_scores")
+      .insert({
+        game_id: GAME_ID,
+        game_title: GAME_TITLE,
+        nickname: nickname,
+        rank_title: currentRankTitle,
+        score: processed
+      });
+
+    if (error) {
+      console.error(error);
+      registerButton.disabled = false;
+      registerButton.textContent = "記録を登録";
+      alert("登録に失敗しました");
+      return;
+    }
+
+    scoreRegistered = true;
+    registerButton.textContent = "登録済み";
+    registerButton.disabled = true;
+    alert("記録を登録しました！");
+  }
+
+  function goToArcade() {
+    window.location.href = ARCADE_URL;
   }
 
   startBtn.addEventListener("click", startGame);
   stampBtn.addEventListener("click", () => judge("approve"));
   returnBtn.addEventListener("click", () => judge("return"));
-  retryBtn.addEventListener("click", backToTitle);
+  retryButton.addEventListener("click", backToTitle);
   homeBtn.addEventListener("click", backToTitle);
-  shareBtn.addEventListener("click", shareResult);
+  shareButton.addEventListener("click", shareResult);
+  registerButton.addEventListener("click", registerScore);
+  arcadeButton.addEventListener("click", goToArcade);
 
   document.addEventListener("contextmenu", e => e.preventDefault());
 
@@ -582,5 +676,6 @@
     }
   });
 
+  resultButtons.classList.add("hidden");
   showScreen(titleScreen);
 })();
