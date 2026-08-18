@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#d8cfad" />
+  <title>決裁ポン！</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Serif+JP:wght@500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main id="app">
+    <button id="homeBtn" class="home-btn" type="button">タイトルへ戻る</button>
+
+    <!-- TITLE -->
+    <section id="titleScreen" class="screen active">
+      <div class="screen-inner title-inner">
+        <img class="title-image" src="title.png" alt="決裁ポン！" />
+
+        <div class="title-copy">
+          <p>書類を見て、決裁するか差し戻せ！</p>
+          <p class="title-sub">60秒で何件さばける？</p>
+        </div>
+
+        <button id="startBtn" class="main-btn" type="button">はじめる</button>
+      </div>
+    </section>
+
+    <!-- GAME -->
+    <section id="gameScreen" class="screen">
+      <div class="game-wrap">
+        <header class="hud">
+          <div class="hud-box">
+            <span class="hud-label">のこり</span>
+            <strong id="timeValue">60</strong><span class="hud-unit">秒</span>
+          </div>
+          <div class="hud-box">
+            <span class="hud-label">処理</span>
+            <strong id="processedValue">0</strong><span class="hud-unit">件</span>
+          </div>
+        </header>
+
+        <div class="desk">
+          <div class="paper-stack stack-left" aria-hidden="true"></div>
+          <div class="paper-stack stack-right" aria-hidden="true"></div>
+
+          <img id="hippo" class="hippo" src="hippo.png" alt="悩むヒッポ係長" />
+
+          <div id="documentArea" class="document-area">
+            <article id="documentCard" class="document-card">
+              <div class="doc-topline">
+                <span>決 裁 書</span>
+                <span id="docNo">No.001</span>
+              </div>
+
+              <h2 id="docTitle">備品購入伺</h2>
+
+              <dl class="doc-table">
+                <div class="doc-row">
+                  <dt>品名</dt>
+                  <dd id="fieldItem">ノートパソコン</dd>
+                </div>
+                <div class="doc-row">
+                  <dt>数量</dt>
+                  <dd id="fieldQty">3台</dd>
+                </div>
+                <div class="doc-row">
+                  <dt>金額</dt>
+                  <dd id="fieldPrice">240,000円</dd>
+                </div>
+                <div class="doc-row">
+                  <dt>理由</dt>
+                  <dd id="fieldReason">業務用機器更新のため</dd>
+                </div>
+                <div class="doc-row">
+                  <dt>担当</dt>
+                  <dd id="fieldPerson">総務課　鈴木</dd>
+                </div>
+              </dl>
+
+              <div id="stampTarget" class="stamp-target" aria-hidden="true">
+                <img id="stampImage" src="stamp.png" alt="" />
+              </div>
+            </article>
+
+            <div id="judgeText" class="judge-text" aria-live="polite"></div>
+            <div id="impactBurst" class="impact-burst" aria-hidden="true"></div>
+            <div id="returnBurst" class="return-burst" aria-hidden="true"></div>
+            <div id="last15" class="last15" aria-live="polite">あと15秒！</div>
+          </div>
+        </div>
+
+        <div class="action-area">
+          <button id="returnBtn" class="action-btn return-btn" type="button">
+            <span class="action-main">差し戻し</span>
+            <span class="action-sub">これはダメ！</span>
+          </button>
+
+          <button id="stampBtn" class="action-btn stamp-btn" type="button">
+            <span class="action-main">ポン！</span>
+            <span class="action-sub">ヒッポ印</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULT -->
+    <section id="resultScreen" class="screen">
+      <div class="screen-inner result-inner">
+        <h1 class="result-title">RESULT</h1>
+
+        <img class="result-image" src="result.png" alt="決裁を終えたヒッポ係長" />
+
+        <div class="result-score-label">正しく処理した書類</div>
+        <div class="result-score">
+          <strong id="resultProcessed">0</strong>
+          <span>件</span>
+        </div>
+
+        <p id="resultComment" class="result-comment">今日もよくさばきました。</p>
+
+        <div class="result-buttons">
+          <button id="shareBtn" class="sub-btn" type="button">Xでシェア</button>
+          <button id="retryBtn" class="main-btn" type="button">もう1回</button>
+          <a class="sub-btn link-btn" href="https://afoolhippo.github.io/home/">カバゲーセン</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <audio id="bgm" src="bgm.mp3" preload="auto" loop></audio>
+  <audio id="stampSe" src="stamp.mp3" preload="auto"></audio>
+  <audio id="returnSe" src="return.mp3" preload="auto"></audio>
+  <audio id="missSe" src="miss.mp3" preload="auto"></audio>
+
+  <script src="game.js"></script>
+</body>
+</html>
